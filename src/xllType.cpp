@@ -28,7 +28,7 @@ xllType* xllType::load() {
         if (!check_ref() || !this->load_ref(xltypeMulti)) this->set_err(xlerrRef);
         return this;
     }
-    // 此处数字判断必须放字符串前面，因为数字在读取中是可以转字符串的
+    // Numeric judgment must be placed before string judgment here, because numbers can be converted to strings during reading
     this->load_ref(xltypeNum);
     if (this->is_num()) {
         if (this->is_sref()) {
@@ -321,11 +321,11 @@ xllType* xllType::serialize() {
     for (auto& x : this->array) {
         std::wstring t;
         if (x->is_num()) {
-            // 数字转字符串
+            // Number to string
             t = std::to_wstring(x->num);
-            // 去除尾部零
+            // Remove trailing zeros
             t.erase(t.find_last_not_of('0') + 1, std::wstring::npos);
-            // 如果小数点后全是零，同时去除小数点
+            // If all digits after decimal point are zero, remove decimal point as well
             if (!t.empty() && t.back() == '.') t.pop_back();
         } else if (x->is_str()) {
             t = x->str;

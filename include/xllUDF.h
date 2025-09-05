@@ -1,6 +1,6 @@
 /**
  * @file xlludf.h
- * @brief 定义XLL UDF函数管理类
+ * @brief Define XLL UDF function management class
  * @author mwmi
  * @date 2024-05-14
  * @copyright Copyright (c) 2024, mwmi
@@ -11,77 +11,77 @@
 #include <string>
 
 namespace udf {
-/// @brief UDF函数信息结构体
+/// @brief UDF function information structure
 enum function {
-  /// @brief Excel中显示的函数的名字
+  /// @brief Function name displayed in Excel
   name,
-  /// @brief Excel中显示的函数的帮助文本
+  /// @brief Help text of the function displayed in Excel
   help,
-  /// @brief Excel中显示的函数的公式类别
+  /// @brief Formula category of the function displayed in Excel
   category,
-  /// @brief 函数的返回类型和参数类型
+  /// @brief Return type and parameter types of the function
   type,
-  /// @brief Excel中显示的函数的参数文本
+  /// @brief Parameter text of the function displayed in Excel
   arguments,
-  /// @brief Excel中显示的函数的参数说明文本
+  /// @brief Parameter description text of the function displayed in Excel
   args_help,
-  /// @brief 当前编写函数的名字
+  /// @brief Name of the currently written function
   registername,
 };
 }
 
 struct UDFInfo {
-  /// @brief 参数个数
+  /// @brief Number of parameters
   int paramNum;
-  /// @brief 文件中声明的函数名字
+  /// @brief Function name declared in file
   wchar_t* register_name = nullptr;
-  /// @brief 函数的返回类型和参数类型
+  /// @brief Return type and parameter types of the function
   wchar_t* type_text = nullptr;
-  /// @brief Excel中显示的函数的名字
+  /// @brief Function name displayed in Excel
   wchar_t* function_name = nullptr;
-  /// @brief Excel中显示的函数的参数文本
+  /// @brief Parameter text of the function displayed in Excel
   wchar_t* argument_text = nullptr;
-  /// @brief Excel中显示的函数的公式类别
+  /// @brief Formula category of the function displayed in Excel
   wchar_t* category = nullptr;
-  /// @brief Excel中显示的函数的说明文本
+  /// @brief Description text of the function displayed in Excel
   wchar_t* function_help = nullptr;
-  /// @brief Excel中显示的函数的参数说明文本
+  /// @brief Parameter description text of the function displayed in Excel
   wchar_t* argument_help = nullptr;
 };
 
-/// @brief 函数信息结构体
+/// @brief Function information structure
 using UDFList = std::map<std::wstring, UDFInfo>;
 
-/// @brief UDF注册类
-/// @details 通过UDFRegistry类可以注册XLL中的UDF函数
+/// @brief UDF registration class
+/// @details The UDFRegistry class can register UDF functions in XLL
 class UDFRegistry {
 public:
-  /// @brief 获取当前对象 @param name 注册函数的名字(可选) @return 当前对象
+  /// @brief Get current object @param name Name of the registration function (optional) @return Current object
   static UDFRegistry& instance(std::wstring name = L"");
 
-  /// @brief 注册UDF函数 @param name 注册函数的名字 @param paramNum 注册函数的参数个数 @return 当前对象
+  /// @brief Register UDF function @param name Name of the registration function @param paramNum Number of parameters of the registration function @return Current object
   UDFRegistry* registerFunction(const std::wstring& name, const int& paramNum);
 
-  /// @brief 注册函数
+  /// @brief Register function
   UDFRegistry* regist();
 
-  /// @brief 取消注册函数
+  /// @brief Unregister function
   UDFRegistry* unregist();
 
-  /// @brief 自动注册所有函数
+  /// @brief Automatically register all functions
   UDFRegistry* AutoRegist();
 
-  /// @brief 自动取消注册所有函数
+  /// @brief Automatically unregister all functions
   UDFRegistry* AutoUnRegist();
 
-  /// @brief 获取当前对象 @return 当前对象
+  /// @brief Get current object @return Current object
   UDFRegistry* get_this();
 
-  /// @brief 设置函数在Excel函数中的帮助内容 @param info 函数信息 @return 当前对象
+  /// @brief Set help content of function in Excel function @param info Function information @return Current object
   UDFRegistry* set_info(const wchar_t* info);
 
-  /// @brief 批量设置函数信息 @param info 函数信息字典 @return 当前对象
-  /// @note 函数信息格式为: {
+  /// @brief Batch set function information @param info Function information dictionary @return Current object
+  /// @note Function information format: {
   /// @note {udf::name, "value1"},{udf::help, "value2"},
   /// @note {udf::category, "value3"},{udf::type, "value4"},
   /// @note {udf::arguments, "value5"},{udf::args_help, "value6"}
@@ -89,25 +89,25 @@ public:
   /// @note }
   UDFRegistry* set_info(std::map<udf::function, std::wstring> info);
 
-  /// @brief 设置注册函数的名称 @param name 函数的注册名称 @return 返回当前对象
+  /// @brief Set name of registration function @param name Registration name of the function @return Return current object
   UDFRegistry* set_regsitername(const wchar_t* name);
 
-  /// @brief 设置函数在Excel中的名称 @param name 函数名字 @return 返回当前对象
+  /// @brief Set function name in Excel @param name Function name @return Return current object
   UDFRegistry* set_funcname(const wchar_t* name);
 
-  /// @brief 设置函数在Excel中的参数类型 @param text 参数类型占位符如"UUU" @return 返回当前对象
+  /// @brief Set parameter types of function in Excel @param text Parameter type placeholder like "UUU" @return Return current object
   UDFRegistry* set_typetext(const wchar_t* text);
 
-  /// @brief 设置函数在Excel提示参数 @param text 参数名字(如:"参数1,参数2,参数3"以逗号分割) @return 返回当前对象
+  /// @brief Set function parameter prompts in Excel @param text Parameter names (like: "param1,param2,param3" separated by commas) @return Return current object
   UDFRegistry* set_argstip(const wchar_t* text);
 
-  /// @brief 设置函数在Excel函数的公式所属类别 @param category 所属类别名字 @return 返回当前对象
+  /// @brief Set formula category of function in Excel functions @param category Category name @return Return current object
   UDFRegistry* set_category(const wchar_t* category);
 
-  /// @brief 设置函数在Excel函数中的帮助内容 @param help 帮助文档 @return 返回当前对象
+  /// @brief Set help content of function in Excel functions @param help Help documentation @return Return current object
   UDFRegistry* set_funchelp(const wchar_t* help);
 
-  /// @brief 设置函数在Excel中各个参数的帮助内容 @param help 帮助文档(如:"参数1,参数2,参数3"以逗号分割) @return 返回当前对象
+  /// @brief Set help content for each parameter of function in Excel @param help Help documentation (like: "param1,param2,param3" separated by commas) @return Return current object
   UDFRegistry* set_argshelp(const wchar_t* help);
 
 private:

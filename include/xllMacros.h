@@ -1,20 +1,20 @@
 /**
  * @file xllmacros.h
  * @author mwm
- * @brief 简单定义一些宏函数
+ * @brief Simple macro function definitions
  * @version 0.2
  * @date 2025-08-30
  * @copyright Copyright (c) 2024
  */
 #pragma once
- // 长文本
+ // Long text
 #define __T(x) L##x
-/// @brief 函数头简写
+/// @brief Function header abbreviation
 #define Function extern "C" __declspec(dllexport) LPXLOPER12
-/// @brief 参数名简写
+/// @brief Parameter name abbreviation
 #define Param LPXLOPER12
 
-/// @brief 展开括号 @param X 函数参数
+/// @brief Expand parentheses @param X Function parameters
 #define EXPAND(X) ESC(ISH X)
 #define ISH(...) ISH { __VA_ARGS__ }
 #define ESC(...) ESC_(__VA_ARGS__)
@@ -22,23 +22,23 @@
 #define VANISH
 
 /**
- * @brief 定义并注册UDF(User Defined Function)用户自定义函数，用于创建Excel自定义函数
- * @param func 函数名，将作为Excel中可调用的函数名
- * @param desc 函数描述信息，可以是字符串或类似map的格式配置
- *             支持格式：`L"简单描述"` 或 `({key, value}, {key, value}, ...)`
- * @param ... 函数参数列表，定义UDF函数接受的Excel参数
+ * @brief Define and register UDF (User Defined Function) for creating Excel custom functions
+ * @param func Function name, will be used as the callable function name in Excel
+ * @param desc Function description, can be a string or map-like format configuration
+ *             Supported formats: `L"Simple description"` or `({key, value}, {key, value}, ...)`
+ * @param ... Function parameter list, defines Excel parameters accepted by the UDF function
  *
- * __工作原理__：
- * 1. 声明并定义一个外部导出函数（Excel可调用）
- * 2. 创建静态注册类实例，在构造函数中完成函数注册：
- *    - 向UDFRegistry注册函数基本信息（名称、参数数量、帮助等）
- *    - 通过set_info设置函数描述信息和配置
- * 3. 重新声明函数，允许在宏后实现具体的函数体
+ * __Working Principle__:
+ * 1. Declare and define an external export function (callable by Excel)
+ * 2. Create static registration class instance, complete function registration in constructor:
+ *    - Register basic function information to UDFRegistry (name, parameter count, help, etc.)
+ *    - Set function description and configuration through set_info
+ * 3. Re-declare function, allowing implementation of specific function body after macro
  *
- * __函数配置参数__：
- * `desc` 可以是简单字符串描述或复杂配置映射：
- * - 简单格式：`L"函数功能描述"`
- * - 复杂格式：
+ * __Function Configuration Parameters__:
+ * `desc` can be simple string description or complex configuration mapping:
+ * - Simple format: `L"Function description"`
+ * - Complex format:
  * ```cpp
  * (
  * { udf::name , L"value1" }, { udf::arguments, L"value2" },
@@ -47,47 +47,47 @@
  * { udf::type , L"value7" }
  * )
  * ```
- * - 支持的配置项：`help`(帮助)、`category`(分类)、`arguments`(参数说明)等
+ * - Supported configuration items: `help`(help), `category`(category), `arguments`(parameter description), etc.
  *
- * __Excel中的调用__：
- * 在Excel单元格中使用 `=函数名(参数1,参数2,...)` 调用
+ * __Calling in Excel__:
+ * Use `=FunctionName(param1,param2,...)` in Excel cells to call
  *
- * @note UDF函数特别适用于自定义计算逻辑，如：
- *       - 数学运算函数（加法、求和、统计）
- *       - 字符串处理函数（拼接、格式化）
- *       - 数据转换和验证函数
- *       - 业务逻辑计算函数
+ * @note UDF functions are especially suitable for custom calculation logic, such as:
+ *       - Mathematical operation functions (addition, summation, statistics)
+ *       - String processing functions (concatenation, formatting)
+ *       - Data conversion and validation functions
+ *       - Business logic calculation functions
  *
- * @warning 确保函数参数类型正确处理，使用xllType类进行类型检查和转换
+ * @warning Ensure function parameter types are handled correctly, use xllType class for type checking and conversion
  *
- * @see UDFRegistry UDF函数注册管理器
- * @see UDFCONFIG UDF函数配置宏
- * @see xllType Excel数据类型封装类
- * @see SET UDF初始化配置宏
+ * @see UDFRegistry UDF function registration manager
+ * @see UDFCONFIG UDF function configuration macro
+ * @see xllType Excel data type wrapper class
+ * @see SET UDF initialization configuration macro
  *
- * __使用示例1：简单加法函数__
+ * __Usage Example 1: Simple addition function__
  *
  * ```cpp
- * UDF(Add, L"两数相加", Param a, Param b) {
+ * UDF(Add, L"Add two numbers", Param a, Param b) {
  *     xllType result;
  *     xllType a_ = a;
  *     xllType b_ = b;
  *     if (a_.is_num() && b_.is_num()) {
  *         result = a_.get_num() + b_.get_num();
  *     } else {
- *         result = L"类型错误！";
+ *         result = L"Type error!";
  *     }
  *     return result.get_return();
  * }
  * ```
  *
- * __使用示例2：带复杂配置的字符串处理函数__
+ * __Usage Example 2: String processing function with complex configuration__
  *
  * ```cpp
  * UDF(Concat2,
- *     ({udf::help, L"拼接两个字符串"},
- *      {udf::category, L"文本函数"},
- *      {udf::arguments, L"文本1,文本2"}),
+ *     ({udf::help, L"Concatenate two strings"},
+ *      {udf::category, L"Text Functions"},
+ *      {udf::arguments, L"Text1,Text2"}),
  *      Param a, Param b) {
  *     xllType result;
  *     xllType a_ = a;
@@ -98,10 +98,10 @@
  * }
  * ```
  *
- * __使用示例3：数组处理函数__
+ * __Usage Example 3: Array processing function__
  *
  * ```cpp
- * UDF(MySum, L"数组求和", Param a) {
+ * UDF(MySum, L"Array summation", Param a) {
  *     xllType result;
  *     xllType a_ = a;
  *     double sum = 0;
@@ -116,18 +116,18 @@
  * }
  * ```
  *
- * __使用示例4：返回数组的函数__
+ * __Usage Example 4: Function returning array__
  *
  * ```cpp
- * UDF(RetArray, L"返回测试数组") {
+ * UDF(RetArray, L"Return test array") {
  *     xllType result;
- *     xllType a = L"文本";
+ *     xllType a = L"Text";
  *     xllType b = 20;
  *     xllType c = 30;
  *
- *     // 创建数组并返回
+ *     // Create array and return
  *     result = {a, b, c};
- *     result.push_back(L"追加项");
+ *     result.push_back(L"Append item");
  *
  *     return result.get_return();
  * }
@@ -142,11 +142,11 @@
     } func##_udf_instance;                                                                                   \
     Function func(__VA_ARGS__)
 
- /// @brief 配置UDF函数 @param func 函数名
+ /// @brief Configure UDF function @param func Function name
 #define UDFCONFIG(func) UDFRegistry::instance(__T(#func)).get_this()
 
-/// @brief UDF配置初始化函数【可选】
-/// @note  UDF可选设置，也可以通过修改源代码来进行配置
+/// @brief UDF configuration initialization function [Optional]
+/// @note  Optional UDF settings, can also be configured by modifying source code
 #define SET()                                   \
     int __udf_init();                              \
     struct __udf_init_register {                   \
@@ -160,48 +160,48 @@
 #define EXPAND_TO_PRIMITIVE(macro, args) macro args
 
 /**
- * @brief 定义并注册RTD(Real-Time Data)函数，用于创建Excel实时数据函数
- * @param func 函数名，将作为Excel中可调用的函数名
- * @param desc 函数描述信息，可以是字符串或类似map的格式配置
- *             支持格式：L"简单描述" 或 ({key, value}, {key, value}, ...)
- * @param rtdconfig RTD服务器配置信息，传递给RTDRegister进行注册
- *                  通常是lambda表达式或函数指针，定义实际的数据获取逻辑
- * @param ... 函数参数列表，定义RTD函数接受的Excel参数
+ * @brief Define and register RTD (Real-Time Data) function for creating Excel real-time data functions
+ * @param func Function name, will be used as the callable function name in Excel
+ * @param desc Function description, can be a string or map-like format configuration
+ *             Supported formats: L"Simple description" or ({key, value}, {key, value}, ...)
+ * @param rtdconfig RTD server configuration information, passed to RTDRegister for registration
+ *                  Usually lambda expression or function pointer, defining actual data acquisition logic
+ * @param ... Function parameter list, defines Excel parameters accepted by the RTD function
  *
- * * __工作原理__：
- * 1. 声明并定义一个外部导出函数（Excel可调用）
- * 2. 创建静态注册类实例，在构造函数中完成双重注册：
- *    - 向UDFRegistry注册函数基本信息（名称、参数、帮助等）
- *    - 向RTDRegister注册RTD特定配置（异步处理、默认值等）
- * 3. 重新声明函数，允许在宏后实现具体的函数体
+ * * __Working Principle__:
+ * 1. Declare and define an external export function (callable by Excel)
+ * 2. Create static registration class instance, complete dual registration in constructor:
+ *    - Register basic function information to UDFRegistry (name, parameters, help, etc.)
+ *    - Register RTD specific configuration to RTDRegister (asynchronous processing, default values, etc.)
+ * 3. Re-declare function, allowing implementation of specific function body after macro
  *
- * __RTD配置参数__：
- * `rtdconfig` 应该是一个包含以下元素的配置：
- * - Lambda表达式或函数指针：实际的数据获取逻辑
- * - 默认值字符串：函数执行期间显示的占位文本
- * - 异步标志：true表示异步执行，false表示同步执行
+ * __RTD Configuration Parameters__:
+ * `rtdconfig` should be a configuration containing the following elements:
+ * - Lambda expression or function pointer: actual data acquisition logic
+ * - Default value string: placeholder text displayed during function execution
+ * - Asynchronous flag: true for asynchronous execution, false for synchronous execution
  *
- * __Excel中的调用__：
- * 在Excel单元格中使用 `=函数名(参数1,参数2,...)` 调用
+ * __Calling in Excel__:
+ * Use `=FunctionName(param1,param2,...)` in Excel cells to call
  *
- * @note RTD函数特别适用于需要频繁更新的数据场景，如：
- *       - 股票价格、汇率等金融数据
- *       - 系统监控数据（CPU、内存使用率）
- *       - 文件内容监控
- *       - 网络API数据获取
+ * @note RTD functions are especially suitable for data scenarios requiring frequent updates, such as:
+ *       - Stock prices, exchange rates and other financial data
+ *       - System monitoring data (CPU, memory usage)
+ *       - File content monitoring
+ *       - Network API data acquisition
  *
- * @warning 确保RTD配置的lambda表达式或函数是线程安全的，
- *          因为它们可能在RTD服务器的工作线程中执行
+ * @warning Ensure RTD configuration lambda expressions or functions are thread-safe,
+ *          as they may execute in RTD server worker threads
  *
- * @see RTDRegister RTD函数注册管理器
- * @see UDFRegistry UDF函数注册管理器
- * @see Topic RTD主题管理类
- * @see CALLRTD RTD函数调用宏
+ * @see RTDRegister RTD function registration manager
+ * @see UDFRegistry UDF function registration manager
+ * @see Topic RTD topic management class
+ * @see CALLRTD RTD function call macro
  *
- * __使用示例1：简单时钟函数__
+ * __Usage Example 1: Simple clock function__
  *
  * ```cpp
- * RTD(CurrentTime, L"获取当前系统时间",
+ * RTD(CurrentTime, L"Get current system time",
  *     ([](xllptrlist args, Topic* topic) {
  *         auto now = std::chrono::system_clock::now();
  *         auto time_t = std::chrono::system_clock::to_time_t(now);
@@ -209,19 +209,19 @@
  *         ss << std::put_time(std::localtime(&time_t), L"%Y-%m-%d %H:%M:%S");
  *         topic->setValue(ss.str());
  *         return 0;
- *     }, L"加载中...", true)) {
+ *     }, L"Loading...", true)) {
  *     xllType ret;
  *     CALLRTD(ret);
  *     return ret.get_return();
  * }
  * ```
  *
- * __使用示例2：带参数的文件监控函数__
+ * __Usage Example 2: File monitoring function with parameters__
  *
  * ```cpp
  * RTD(FileContent,
- *     ({udf::help, L"监控文件内容变化"},
- *      {udf::arguments, L"文件路径"}),
+ *     ({udf::help, L"Monitor file content changes"},
+ *      {udf::arguments, L"File path"}),
  *     ([](xllptrlist args, Topic* topic) {
  *         if (args.size() > 0) {
  *             std::wstring filepath = args[0]->get_str();
@@ -231,33 +231,33 @@
  *                                     std::istreambuf_iterator<wchar_t>());
  *                 topic->setValue(content);
  *             } else {
- *                 topic->setValue(L"文件读取失败");
+ *                 topic->setValue(L"File read failed");
  *             }
  *         }
  *         return 0;
- *     }, L"读取中...", true), Param filepath) {
+ *     }, L"Reading...", true), Param filepath) {
  *     xllType ret;
  *     CALLRTD(ret, filepath);
  *     return ret.get_return();
  * }
  * ```
  *
- * __使用示例3：股票价格监控__
+ * __Usage Example 3: Stock price monitoring__
  *
  * ```cpp
  * RTD(StockPrice,
- *     ({udf::help, L"获取实时股票价格"},
- *      {udf::category, L"金融数据"},
- *      {udf::arguments, L"股票代码"}),
+ *     ({udf::help, L"Get real-time stock price"},
+ *      {udf::category, L"Financial Data"},
+ *      {udf::arguments, L"Stock symbol"}),
  *     ([](xllptrlist args, Topic* topic) {
  *         if (args.size() > 0) {
  *             std::wstring symbol = args[0]->get_str();
- *             // 这里应该调用实际的股票API
+ *             // This should call actual stock API
  *             double price = getStockPriceFromAPI(symbol);
  *             topic->setValue(std::to_wstring(price));
  *         }
  *         return 0;
- *     }, L"获取价格中...", true), Param symbol) {
+ *     }, L"Getting price...", true), Param symbol) {
  *     xllType ret;
  *     CALLRTD(ret, symbol);
  *     return ret.get_return();
@@ -274,9 +274,9 @@
     } func##_rtd_instance;                                                                                     \
     Function func(__VA_ARGS__)
 
- /// @brief 调用RTD函数, 此方法便于调用RTD函数
- /// @param ret 获取返回值
- /// @param ... 参数列表(传入的参数尽可能的不要有改变，因为这会导致rtd服务无法获取到结果)
- /// @note 该宏容易编译失败,在无参数条件下,因为逗号的原因,使用该宏,有的编译器会报错
- /// @note 若遇到编译失败的问题，建议直接调用`xllRTD`函数
+ /// @brief Call RTD function, this method facilitates calling RTD functions
+ /// @param ret Get return value
+ /// @param ... Parameter list (try not to change the passed parameters as this may cause RTD service to fail to get results)
+ /// @note This macro is prone to compilation failure. Under no parameter conditions, due to comma issues, some compilers will report errors when using this macro
+ /// @note If compilation failure occurs, it is recommended to directly call the `xllRTD` function
 #define CALLRTD(ret, ...) xllRTD(ret, __func__, ##__VA_ARGS__)

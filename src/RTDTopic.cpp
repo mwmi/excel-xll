@@ -1,6 +1,6 @@
 #include "RTDTopic.h"
 
-// VARIANT 创建函数实现
+// VARIANT creation function implementation
 VARIANT createVariant(int value) {
     VARIANT variant;
     VariantInit(&variant);
@@ -17,12 +17,12 @@ VARIANT createVariant(const std::wstring& value) {
     return variant;
 }
 
-// Topic 类析构函数
+// Topic class destructor
 Topic::~Topic() {
     stopTask();
 }
 
-// Topic 类构造函数实现
+// Topic class constructor implementation
 Topic::Topic(long id, SAFEARRAY** Strings) {
     this->topic_id = id;
     if (Strings != nullptr) {
@@ -43,12 +43,12 @@ Topic::Topic(long id, SAFEARRAY** Strings, std::wstring defaultValue) : Topic(id
     setDefaultValue(defaultValue);
 }
 
-// 私有辅助函数实现
+// Private helper function implementation
 void Topic::cleanup() {
     stopTask();
 }
 
-// 成员函数实现
+// Member function implementation
 long Topic::getID() const {
     return topic_id;
 }
@@ -115,7 +115,7 @@ Topic* Topic::update(SAFEARRAY** parrayOut, int i) {
         val = createVariant(getValue());
     } else {
         if (default_value.empty()) {
-            default_value = L"没有初始值";
+            default_value = L"No initial value";
         }
         val = createVariant(getDefaultValue());
     }

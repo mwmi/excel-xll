@@ -2,15 +2,15 @@
 #include "xllRTD.h"
 #include <ks.h>
 
-constexpr long DEFAULT_HEARTBEAT_INTERVAL = 15000; // 默认心跳间隔（毫秒）
-constexpr int DEFAULT_RUNNING_INTERVAL = 1000;     // 默认运行间隔（毫秒）
+constexpr long DEFAULT_HEARTBEAT_INTERVAL = 15000; // Default heartbeat interval (milliseconds)
+constexpr int DEFAULT_RUNNING_INTERVAL = 1000;     // Default running interval (milliseconds)
 
 WCHAR RtdServer_DllPath[1024] = L"";
 DWORD RtdServer::WorkerThreadProc() {
     while (m_running) {
         bool isChanged = false;
 
-        // 使用作用域锁保护主题映射表
+        // Use scoped lock to protect topic map
         {
             std::lock_guard<std::mutex> lock(m_TopicMapMutex);
             for (const auto& pair : m_TopicMap) {
@@ -26,7 +26,7 @@ DWORD RtdServer::WorkerThreadProc() {
             }
         }
 
-        // 在锁外调用回调，避免死锁
+        // Call callback outside the lock to avoid deadlock
         if (isChanged && m_pCallbackObject != nullptr && m_running) {
             m_pCallbackObject->UpdateNotify();
         }
@@ -43,10 +43,10 @@ runing_ms(DEFAULT_RUNNING_INTERVAL) {
 }
 
 RtdServer::~RtdServer() {
-    // 确保服务器终止和资源清理
+    // Ensure server termination and resource cleanup
     ServerTerminate();
 
-    // 释放类型信息接口
+    // Release type information interface
     if (m_pTypeInfoInterface != nullptr) {
         m_pTypeInfoInterface->Release();
         m_pTypeInfoInterface = nullptr;
@@ -123,7 +123,7 @@ HRESULT STDMETHODCALLTYPE RtdServer::ServerStart(IRTDUpdateEvent* CallbackObject
 
     HRESULT hr = S_OK;
 
-    // 设置心跳间隔
+    // Set heartbeat interval
     hr = CallbackObject->put_HeartbeatInterval(m_HeartbeatInterval);
     if (FAILED(hr)) {
         return hr;
@@ -134,7 +134,7 @@ HRESULT STDMETHODCALLTYPE RtdServer::ServerStart(IRTDUpdateEvent* CallbackObject
     if (!m_running) {
         m_running = true;
 
-        // 创建工作线程
+        // Create worker thread
         m_hThread = CreateThread(nullptr, 0, [](LPVOID param) -> DWORD {
             RtdServer* self = static_cast<RtdServer*>(param);
             return self->WorkerThreadProc(); }, this, 0, &m_threadID);
@@ -157,12 +157,12 @@ HRESULT STDMETHODCALLTYPE RtdServer::ConnectData(long TopicID, SAFEARRAY** Strin
 
     std::lock_guard<std::mutex> lock(m_TopicMapMutex);
 
-    // 检查主题ID是否已存在
+    // Check if topic ID already exists
     if (m_TopicMap.find(TopicID) != m_TopicMap.end()) {
-        return E_FAIL; // 主题已存在
+        return E_FAIL; // Topic already exists
     }
 
-    // 创建新主题
+    // Create new topic
     Topic* pTopic = nullptr;
     try {
         pTopic = new Topic(TopicID, Strings, L"Default Value");
@@ -170,19 +170,19 @@ HRESULT STDMETHODCALLTYPE RtdServer::ConnectData(long TopicID, SAFEARRAY** Strin
         // createRtdTask(pTopic);
         registerRTDTask(pTopic);
 
-        // 如果需要获取新值且有默认值，则返回默认值
+        // If need to get new values and has default value, return default value
         if (*GetNewValues != VARIANT_FALSE && pTopic->hasDefaultValue()) {
             VARIANT temp = createVariant(pTopic->getDefaultValue());
             *pvarOut = temp;
-            // 注意：不在这里调用 VariantClear，因为值已经转移给 pvarOut
+            // Note: Don't call VariantClear here because the value has been transferred to pvarOut
         } else {
-            VariantInit(pvarOut); // 初始化为空值
+            VariantInit(pvarOut); // Initialize to empty value
         }
 
         m_TopicMap[TopicID] = pTopic;
         return S_OK;
     } catch (const std::exception&) {
-        delete pTopic; // 清理部分创建的资源
+        delete pTopic; // Clean up partially created resources
         return E_OUTOFMEMORY;
     }
 }
@@ -193,7 +193,7 @@ HRESULT STDMETHODCALLTYPE RtdServer::RefreshData(long* TopicCount, SAFEARRAY** p
     }
 
     if (*parrayOut != nullptr) {
-        return E_INVALIDARG; // 输出数组应该为空
+        return E_INVALIDARG; // Output array should be empty
     }
 
     if (!m_running) {
@@ -203,7 +203,7 @@ HRESULT STDMETHODCALLTYPE RtdServer::RefreshData(long* TopicCount, SAFEARRAY** p
 
     std::vector<std::pair<long, Topic*>> changedTopics;
 
-    // 收集所有有变化的主题
+    // Collect all changed topics
     {
         std::lock_guard<std::mutex> lock(m_TopicMapMutex);
         for (const auto& pair : m_TopicMap) {
@@ -217,10 +217,10 @@ HRESULT STDMETHODCALLTYPE RtdServer::RefreshData(long* TopicCount, SAFEARRAY** p
     *TopicCount = static_cast<long>(changedTopics.size());
 
     if (*TopicCount == 0) {
-        return S_OK; // 没有变化的数据
+        return S_OK; // No changed data
     }
 
-    // 创建二维数组：第一维是2（TopicID 和 Value），第二维是主题数量
+    // Create 2D array: first dimension is 2 (TopicID and Value), second dimension is topic count
     SAFEARRAYBOUND bounds[2];
     bounds[0].cElements = 2;
     bounds[0].lLbound = 0;
@@ -232,7 +232,7 @@ HRESULT STDMETHODCALLTYPE RtdServer::RefreshData(long* TopicCount, SAFEARRAY** p
         return E_OUTOFMEMORY;
     }
 
-    // 填充数据
+    // Fill data
     for (long i = 0; i < *TopicCount; ++i) {
         changedTopics[i].second->update(parrayOut, i);
     }
@@ -247,7 +247,7 @@ HRESULT STDMETHODCALLTYPE RtdServer::DisconnectData(long TopicID) {
     if (it != m_TopicMap.end()) {
         Topic* topic = it->second;
         if (topic != nullptr) {
-            topic->stopTask(); // 停止任务后再删除
+            topic->stopTask(); // Stop task before deletion
             delete topic;
         }
         m_TopicMap.erase(it);
@@ -265,10 +265,10 @@ HRESULT STDMETHODCALLTYPE RtdServer::Heartbeat(long* pfRes) {
 }
 
 HRESULT STDMETHODCALLTYPE RtdServer::ServerTerminate() {
-    // 停止运行标志
+    // Stop running flag
     m_running = false;
 
-    // 等待线程结束(WaitForSingleObject会卡UI，所以直接强制结束)
+    // Wait for thread termination (WaitForSingleObject will block UI, so force termination directly)
     if (m_hThread != nullptr) {
         TerminateThread(m_hThread, 0);
         CloseHandle(m_hThread);
@@ -276,12 +276,12 @@ HRESULT STDMETHODCALLTYPE RtdServer::ServerTerminate() {
         m_threadID = 0;
     }
 
-    // 清理所有主题
+    // Clean up all topics
     {
         std::lock_guard<std::mutex> lock(m_TopicMapMutex);
         for (const auto& pair : m_TopicMap) {
             if (pair.second != nullptr) {
-                pair.second->stopTask(); // 停止任务
+                pair.second->stopTask(); // Stop task
                 delete pair.second;
             }
         }
@@ -289,7 +289,7 @@ HRESULT STDMETHODCALLTYPE RtdServer::ServerTerminate() {
         m_DeleteTopicIDs.clear();
     }
 
-    // 清理回调对象引用
+    // Clean up callback object reference
     m_pCallbackObject = nullptr;
 
     return S_OK;

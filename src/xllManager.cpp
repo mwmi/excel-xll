@@ -1,7 +1,7 @@
 #include "xllManager.h"
 #include "dll.h"
 
-/// @brief 打开文档时触发 @return int
+/// @brief Triggered when opening document @return int
 extern "C" __declspec(dllexport) int xlAutoOpen(void) {
     int ret = xll::open();
     UDFRegistry::instance().AutoRegist();
@@ -9,24 +9,24 @@ extern "C" __declspec(dllexport) int xlAutoOpen(void) {
     return ret;
 }
 
-/// @brief 关闭文档时触发 @return int
+/// @brief Triggered when closing document @return int
 extern "C" __declspec(dllexport) int xlAutoClose(void) {
     UDFRegistry::instance().AutoUnRegist();
     if (xll::enableRTD) DllUnregisterServer();
     return xll::close();
 }
 
-/// @brief 添加xll时触发 @return int
+/// @brief Triggered when adding xll @return int
 extern "C" __declspec(dllexport) int xlAutoAdd(void) {
     return xll::add();
 }
 
-/// @brief 卸载xll时触发 @return int
+/// @brief Triggered when unloading xll @return int
 extern "C" __declspec(dllexport) int xlAutoRemove(void) {
     return xll::remove();
 }
 
-/// @brief 控制xll函数的内存释放
+/// @brief Control memory release of xll functions
 extern "C" __declspec(dllexport) void xlAutoFree12(LPXLOPER12 pxFree) {
     if (pxFree->xltype & xltypeStr && pxFree->val.str) {
         delete[] pxFree->val.str;
@@ -41,7 +41,7 @@ extern "C" __declspec(dllexport) void xlAutoFree12(LPXLOPER12 pxFree) {
     delete pxFree;
 }
 
-///@brief 注册xll函数
+///@brief Register xll functions
 extern "C" __declspec(dllexport) LPXLOPER12 xlAutoRegister12(LPXLOPER12 pxName) {
     static xloper12 xDLL, xRegId;
     int i;
@@ -69,16 +69,19 @@ extern "C" __declspec(dllexport) LPXLOPER12 xlAutoRegister12(LPXLOPER12 pxName) 
     return (LPXLOPER12)&xRegId;
 }
 
-/// @brief xll管理器信息 @param xAction
+/// @brief xll manager information @param xAction
 extern "C" __declspec(dllexport) LPXLOPER12 xlAddInManagerInfo12(LPXLOPER12 xAction) {
-    static xloper12 xInfo;
+    static xloper12 xInfo = {};
 
     xloper12 xIntAction;
     xloper12 temp = makeXllInt(xltypeInt);
     Excel12(xlCoerce, &xIntAction, 2, xAction, &temp);
-    xll::xllName.insert(0, 1, xll::xllName.length());
     if (xIntAction.val.w == 1) {
-        xInfo = makeXllStr(xll::xllName.data());
+        if (xInfo.xltype != xltypeStr) {
+            xll::xllName.insert(0, 1, xll::xllName.length());
+            xInfo.xltype = xltypeStr;
+            xInfo.val.str = xll::xllName.data();
+        }
     } else {
         xInfo = makeXllError(xlerrValue);
     }
@@ -88,7 +91,7 @@ extern "C" __declspec(dllexport) LPXLOPER12 xlAddInManagerInfo12(LPXLOPER12 xAct
 namespace xll {
 bool enableRTD = true;
 std::wstring xllName = L"Default";
-std::wstring defaultCategory = L"XLL函数";
+std::wstring defaultCategory = L"XLL Functions";
 XllFunc open = []() { return 1; };
 XllFunc close = []() { return 1; };
 XllFunc add = []() { return 1; };

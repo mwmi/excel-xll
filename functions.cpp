@@ -1,20 +1,20 @@
 /**
  * @file functions.cpp
- * @brief xll函数实现
+ * @brief xll function implementation
  * @author mwmi
  * @copyright Copyright (c) 2025 by mwmi, All rights reserved.
  */
 #include "xllManager.h"
 
-UDF(HelloWorld, L"测试文本") {
+UDF(HelloWorld, L"Test text") {
     xllType result;
-    result = L"你好世界";
+    result = L"Hello World";
     return result.get_return();
 }
 
 UDF(Add, (
-    {udf::help, L"测试加法"},
-    // { udf::category, L"分类"}
+    {udf::help, L"Test addition"},
+    // { udf::category, L"Category"}
     ), Param a, Param b) {
     xllType result;
     xllType a_ = a;
@@ -22,12 +22,12 @@ UDF(Add, (
     if (a_.is_num() && b_.is_num()) {
         result = a_.get_num() + b_.get_num();
     } else {
-        result = L"类型错误！";
+        result = L"Type error!";
     }
     return result.get_return();
 }
 
-UDF(Concat2, L"测试拼接字符串", Param a, Param b) {
+UDF(Concat2, L"Test string concatenation", Param a, Param b) {
     xllType result;
     xllType a_ = a;
     xllType b_ = b;
@@ -36,26 +36,26 @@ UDF(Concat2, L"测试拼接字符串", Param a, Param b) {
     return result.get_return();
 }
 
-UDF(MySum, L"测试单元格引用", Param a) {
+UDF(MySum, L"Test cell reference", Param a) {
     xllType result;
     xllType a_ = a;
     double sum = 0;
     if (a_.is_array()) {
-        // 使用迭代器遍历数组中的每个元素
+        // Use iterator to traverse each element in the array
         sum = 0;
         for (auto i : a_) {
             if (i->is_num())
                 sum += i->get_num();
         }
 
-        // 使用索引方式1遍历数组
+        // Use index method 1 to traverse the array
         sum = 0;
         for (int i = 0; i < a_.size(); ++i) {
             if ((a_)[i]->is_num())
                 sum += (a_)[i]->get_num();
         }
 
-        // 使用索引方式2遍历数组
+        // Use index method 2 to traverse the array
         sum = 0;
         for (int i = 0; i < a_.size(); ++i) {
             if (a_.at(i)->is_num())
@@ -66,12 +66,12 @@ UDF(MySum, L"测试单元格引用", Param a) {
     return result.get_return();
 }
 
-UDF(MyConcat, L"测试文本数组", Param a) {
+UDF(MyConcat, L"Test text array", Param a) {
     xllType result;
     xllType a_ = a;
     std::wstring ret = L"";
     if (a_.is_array()) {
-        // 遍历数组中的每个元素，连接所有字符串类型的单元格
+        // Traverse each element in the array and concatenate all string-type cells
         for (auto i : a_) {
             if (i->is_str())
                 ret += i->get_str();
@@ -81,56 +81,56 @@ UDF(MyConcat, L"测试文本数组", Param a) {
     return result.get_return();
 }
 
-UDF(RetArray, L"测试返回数组") {
+UDF(RetArray, L"Test return array") {
     xllType result;
-    xllType a = L"字符串1";
+    xllType a = L"String1";
     xllType b = 20;
     xllType c = 30;
     xllType d = 40;
-    xllType e = L"字符串2";
+    xllType e = L"String2";
 
-    // 将变量 a, b, c, d 组合成一个二维数组结构并赋值给 result
+    // Combine variables a, b, c, d into a 2D array structure and assign to result
     result = {{a,b},{c,d}};
     // result.push_back(e);
-    // result.push_back(L"你啊实打实的");
+    // result.push_back(L"Really seriously");
     // result.push_back(12331);
     // result = 10;
     // result.push_back(20);
 
-    // 调用 xllType 的 get_return 方法返回结果
+    // Call the get_return method of xllType to return the result
     return result.get_return();
 }
 
-// 测试Excel内置函数调用
-UDF(Test, L"测试内置函数") {
+// Test Excel built-in function call
+UDF(Test, L"Test built-in function") {
     xllType ret;
     ret = RtdServer_DllPath;
-    // xll::callExcelFunction(ret, xlfAbs, -100); // 通过
-    // xll::callExcelFunction(ret, xlfSum, a); // 通过
-    // xll::callExcelFunction(ret, xlfMin, 10, 20, 30, 40, 50, 60); // 通过
-    // xll::callExcelFunction(ret, xlfLeft, L"asdasdasd", 2); // 通过
+    // xll::callExcelFunction(ret, xlfAbs, -100); // Pass
+    // xll::callExcelFunction(ret, xlfSum, a); // Pass
+    // xll::callExcelFunction(ret, xlfMin, 10, 20, 30, 40, 50, 60); // Pass
+    // xll::callExcelFunction(ret, xlfLeft, L"asdasdasd", 2); // Pass
     return ret.get_return();
 }
 
-// RTD你好世界 调用: =RTDHelloWorld()
-RTD(RTDHelloWorld, L"RTD你好世界", ([](xllptrlist args, Topic* topic) {
+// RTD Hello World Call: =RTDHelloWorld()
+RTD(RTDHelloWorld, L"RTD Hello World", ([](xllptrlist args, Topic* topic) {
 
-    // 定义你的RTD函数逻辑
+    // Define your RTD function logic
     topic->setValue(L"Hello World");
     return 0;
 
-}, L"等待加载中...")) {
+}, L"Loading...")) {
 
     xllType ret;
-    // 调用RTD函数，并传入参数
+    // Call RTD function and pass parameters
     CALLRTD(ret);
-    // 返回结果
+    // Return result
     return ret.get_return();
 
 }
 
-// RTD显示时钟(异步调用) 调用: =RTDClock()
-RTD(RTDClock, L"显示时钟", ([](xllptrlist args, Topic* topic) {
+// RTD Display Clock (Asynchronous Call) Call: =RTDClock()
+RTD(RTDClock, L"Display Clock", ([](xllptrlist args, Topic* topic) {
 
     SYSTEMTIME st;
     while (true) {
@@ -142,7 +142,7 @@ RTD(RTDClock, L"显示时钟", ([](xllptrlist args, Topic* topic) {
     }
     return 0;
 
-}, L"准备显示", true)) {
+}, L"Ready to display", true)) {
 
     xllType ret;
     CALLRTD(ret);
@@ -150,23 +150,23 @@ RTD(RTDClock, L"显示时钟", ([](xllptrlist args, Topic* topic) {
 
 }
 
-// 测试RTD数组 调用: =RTDArray()
-RTD(RTDArray, L"返回数组", ([](xllptrlist args, Topic* topic) {
+// Test RTD Array Call: =RTDArray()
+RTD(RTDArray, L"Return Array", ([](xllptrlist args, Topic* topic) {
     xllType a = 10.123123;
-    xllType b = L"十";
+    xllType b = L"Ten";
     xllType c = 20;
-    xllType d = L"二十";
+    xllType d = L"Twenty";
     xllType ret({{a,b},{c,d}});
     topic->setValue(ret);
     return 0;
-}, L"准备数据中...")) {
+}, L"Preparing data...")) {
     xllType ret;
     CALLRTD(ret);
     return ret.get_return();
 }
 
-// 测试RTD参数引用 调用: =RTDParam(单元格引用)
-RTD(RTDParam, L"测试传入单元格引用，并返回单元格内容", ([](xllptrlist args, Topic* topic) {
+// Test RTD Parameter Reference Call: =RTDParam(cell reference)
+RTD(RTDParam, L"Test passing cell reference and return cell content", ([](xllptrlist args, Topic* topic) {
 
     xllType p;
     if (args.size() > 0) {
@@ -175,7 +175,7 @@ RTD(RTDParam, L"测试传入单元格引用，并返回单元格内容", ([](xll
     topic->setValue(p);
     return 0;
 
-}, L"开始测试"), Param a) {
+}, L"Start testing"), Param a) {
 
     xllType ret;
     CALLRTD(ret, a);
@@ -183,20 +183,20 @@ RTD(RTDParam, L"测试传入单元格引用，并返回单元格内容", ([](xll
 
 }
 
-// 配置设置
+// Configuration settings
 SET() {
-    xll::xllName = L"xll名称设置";
+    xll::xllName = L"XLL Name Setting";
 
-    // 设置默认的XLL默认类别为“自定义功能”。
-    // xll::defaultCategory = L"自定义功能";
+    // Set default XLL category to "Custom Functions".
+    // xll::defaultCategory = L"Custom Functions";
 
-    // 设置是否启用RTD, 默认启用
+    // Set whether to enable RTD, enabled by default
     // xll::enableRTD = false;
 
     xll::open = []() {
-        // 设置函数信息
-        // UDFCONFIG(HelloWorld)->set_funchelp(L"你好世界!!!!");
-        // xll::alert(L"欢迎使用XLL加载器");
+        // Set function information
+        // UDFCONFIG(HelloWorld)->set_funchelp(L"Hello World!!!!");
+        // xll::alert(L"Welcome to use XLL Loader");
         return 1;
     };
 

@@ -80,9 +80,9 @@ UDFRegistry* UDFRegistry::regist() {
     }
     if (info.argument_text == nullptr) {
         if (_param_nums > 1) {
-            std::wstring s = L"参数1";
+            std::wstring s = L"Parameter1";
             for (int i = 2; i < _param_nums; i++)
-                s += L",参数" + std::to_wstring(i);
+                s += L",Parameter" + std::to_wstring(i);
             info.argument_text = makeStr12(s);
         } else {
             info.argument_text = makeStr12(L"");
@@ -243,7 +243,7 @@ UDFRegistry* UDFRegistry::set_funchelp(const wchar_t* help) {
         delete[] info.function_help;
         info.function_help = nullptr;
     }
-    // 添加空格，避免函数提示被截断
+    // Add space to prevent function hint truncation
     info.function_help = makeStr12(std::wstring(help) + L' ');
     return this;
 }

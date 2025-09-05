@@ -1,6 +1,6 @@
 /**
  * @file xllManager.h
- * @brief 简单封装一下Excel的xll接口
+ * @brief Simple encapsulation of Excel's xll interface
  * @author mwmi
  * @date 2024-05-13
  * @copyright Copyright (c) 2024 by mwmi, All rights reserved.
@@ -14,12 +14,12 @@
 #include "xllRTD.h"
 #include "xllMacros.h"
 
-/// @brief 声明XLL函数指针类型 @return int
+/// @brief Declare XLL function pointer type @return int
 using XllFunc = int (*)();
 
 namespace xll {
 
-/// @brief xll入口函数注册类
+/// @brief xll entry function registration class
 struct init {
     static init& instance() { static init i; return i; }
     void set(auto& f) { _init = f; }
@@ -28,52 +28,52 @@ private:
     XllFunc _init = nullptr;
 };
 
-/// @brief 定义Excel的启动运行函数 @return int
+/// @brief Define Excel's startup function @return int
 extern XllFunc open;
 
-/// @brief 定义Excel的关闭运行函数 @return int
+/// @brief Define Excel's close function @return int
 extern XllFunc close;
 
-/// @brief 定义add函数 @return int
+/// @brief Define add function @return int
 extern XllFunc add;
 
-/// @brief 定义remove函数 @return int
+/// @brief Define remove function @return int
 extern XllFunc remove;
 
-/// @brief 定义register函数 @return int
+/// @brief Define register function @return int
 extern XllFunc autoregister;
 
-/// @brief xll管理器中显示名字
+/// @brief Display name in xll manager
 extern std::wstring xllName;
 
-/// @brief 设置xll的默认类别
+/// @brief Set default category for xll
 extern std::wstring defaultCategory;
 
-/// @brief 是否启用RTD服务(默认为true)
+/// @brief Whether to enable RTD service (default is true)
 extern bool enableRTD;
 
-/// @brief 显示提示框 @param msg 提示内容 @param title 标题 @return int
-int MsgBox(const wchar_t* msg, const wchar_t* title = L"提示");
+/// @brief Show message box @param msg Message content @param title Title @return int
+int MsgBox(const wchar_t* msg, const wchar_t* title = L"Tip");
 
-/// @brief 使用Excel内置提示框显示提示信息 @param msg 提示的内容
+/// @brief Use Excel built-in alert box to display message @param msg Message content
 bool alert(const wchar_t* msg);
 
-/// @brief 获取单元格信息 @param cellInfo 单元格信息 @return bool 是否成功获取
+/// @brief Get cell information @param cellInfo Cell information @return bool Whether successfully obtained
 bool getCellInfomation(XLOPER12& cellInfo);
 
-/// @brief 获取xll文件的全路径 @param path xll文件的全路径 @return bool 是否成功获取
+/// @brief Get full path of xll file @param path Full path of xll file @return bool Whether successfully obtained
 bool getXLLFullPath(std::wstring& path);
 
-/// @brief 获取Excel的句柄 @param hwnd Excel的句柄 @return bool 是否成功获取
+/// @brief Get Excel handle @param hwnd Excel handle @return bool Whether successfully obtained
 bool getExcelHandle(HWND& hwnd);
 
-/// @brief 根据Excel表达式返回值【注意：表达式不需要加等号】 @param expression Excel表达式 @param value 返回值 @return bool 是否成功获取
-/// @note 表达式示例：SUM(A1:A5)
-/// @note 注意返回结果不会随着单元格内容的改变而改变
+/// @brief Return value based on Excel expression [Note: expression does not need equal sign] @param expression Excel expression @param value Return value @return bool Whether successfully obtained
+/// @note Expression example: SUM(A1:A5)
+/// @note Note that the return result will not change with cell content changes
 bool evaluate(std::wstring expression, xllType& value);
 
-/// @brief 调用Excel函数 @tparam ...Args 参数类型 @param result 返回值 @param xlfn 函数编号 @param ...args 参数 @return int 调用结果
-/// @note 函数编号参考XLCALL.H中的Xlf
+/// @brief Call Excel function @tparam ...Args Parameter types @param result Return value @param xlfn Function number @param ...args Parameters @return int Call result
+/// @note Function numbers refer to Xlf in XLCALL.H
 template <typename... Args>
 int callExcelFunction(xllType& result, int xlfn, Args... args) {
     constexpr int n = sizeof...(args);

@@ -109,39 +109,39 @@ xloper12 makeXllNum(double d) {
 }
 
 bool xllSerialize(const std::vector<std::vector<std::wstring>>& data, std::wstring& result) {
-    // 预先计算所需的总字符数以减少内存重新分配
+    // Pre-calculate total required characters to reduce memory reallocation
     size_t total_length = 0;
 
-    // 第一遍：计算所需的总长度
+    // First pass: Calculate required total length
     for (const auto& row : data) {
         if (!row.empty()) {
-            // 添加行分隔符（除了第一行）
-            if (total_length > 0) total_length += 1; // 对于 | 分隔符
+            // Add row separator (except for first row)
+            if (total_length > 0) total_length += 1; // For | separator
 
             for (const auto& cell : row) {
-                // 添加列分隔符（除了第一列）
-                if (total_length > 0 && &cell != &row[0]) total_length += 1; // 对于 , 分隔符
+                // Add column separator (except for first column)
+                if (total_length > 0 && &cell != &row[0]) total_length += 1; // For , separator
 
-                // 计算单元格内容的长度（包括转义字符）
+                // Calculate cell content length (including escape characters)
                 for (wchar_t c : cell) {
                     total_length += 1;
                     if (c == L'\\' || c == L',' || c == L'|') {
-                        total_length += 1; // 需要额外添加转义字符
+                        total_length += 1; // Need to add extra escape character
                     }
                 }
             }
         }
     }
 
-    // 预先分配足够的内存
+    // Pre-allocate sufficient memory
     result.reserve(total_length);
 
-    // 第二遍：构建字符串
+    // Second pass: Build string
     bool first_row = true;
     for (const auto& row : data) {
         if (row.empty()) continue;
 
-        // 添加行分隔符
+        // Add row separator
         if (!first_row) {
             result += L'|';
         }
@@ -149,13 +149,13 @@ bool xllSerialize(const std::vector<std::vector<std::wstring>>& data, std::wstri
 
         bool first_cell = true;
         for (const auto& cell : row) {
-            // 添加列分隔符
+            // Add column separator
             if (!first_cell) {
                 result += L',';
             }
             first_cell = false;
 
-            // 处理单元格内容
+            // Process cell content
             for (wchar_t c : cell) {
                 if (c == L'\\' || c == L',' || c == L'|') {
                     result += L'\\';
@@ -172,8 +172,8 @@ bool xllDeserialize(const std::wstring& str, std::vector<std::vector<std::wstrin
     std::vector<std::wstring> currentRow;
     std::wstring currentValue;
 
-    // 预先估计容量以减少重新分配
-    currentValue.reserve(64);  // 假设平均字段长度
+    // Pre-estimate capacity to reduce reallocation
+    currentValue.reserve(64);  // Assume average field length
 
     bool escaping = false;
 
@@ -185,17 +185,17 @@ bool xllDeserialize(const std::wstring& str, std::vector<std::vector<std::wstrin
             escaping = true;
         } else if (c == L',') {
             currentRow.emplace_back(std::move(currentValue));
-            currentValue.reserve(64);  // 保持预留容量
+            currentValue.reserve(64);  // Maintain reserved capacity
         } else if (c == L'|') {
             currentRow.emplace_back(std::move(currentValue));
             result.emplace_back(std::move(currentRow));
-            currentValue.reserve(64);  // 保持预留容量
+            currentValue.reserve(64);  // Maintain reserved capacity
         } else {
             currentValue += c;
         }
     }
 
-    // 处理最后一个值
+    // Process last value
     if (currentValue.empty()) {
         int size = str.size();
         if ((size >= 2) && (str[size - 1] == L',') && (str[size - 2] != L'\\' || (size > 2 && str[size - 3] == L'\\'))) {

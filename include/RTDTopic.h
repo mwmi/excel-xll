@@ -7,51 +7,51 @@
 #include <string>
 #include <vector>
 
-// 前向声明
+// Forward declaration
 class Topic;
 
-// 类型别名
+// Type aliases
 using Task = std::function<int(Topic* topic)>;
 using StringArray = std::vector<std::wstring>;
 using StringMatrix = std::vector<StringArray>;
 
-// VARIANT 创建函数声明
+// VARIANT creation function declarations
 VARIANT createVariant(int value);
 VARIANT createVariant(const std::wstring& value);
 
 /**
  * @class Topic
- * @brief RTD 主题类，用于管理实时数据主题
+ * @brief RTD topic class for managing real-time data topics
  *
- * 该类封装了 RTD 主题的核心功能，包括：
- * - 主题参数管理
- * - 值的存储和更新
- * - 异步任务执行
- * - COM 对象交互
+ * This class encapsulates the core functionality of RTD topics, including:
+ * - Topic parameter management
+ * - Value storage and updates
+ * - Asynchronous task execution
+ * - COM object interaction
  */
 class Topic {
 public:
-  // 构造函数和析构函数
+  // Constructors and destructor
   Topic() = default;
   ~Topic();
   Topic(long id, SAFEARRAY** Strings);
   Topic(long id, SAFEARRAY** Strings, std::wstring defaultValue);
 
-  // 禁用拷贝构造和赋值运算符（因为包含 Windows 句柄）
+  // Disable copy constructor and assignment operator (contains Windows handles)
   Topic(const Topic&) = delete;
   Topic& operator=(const Topic&) = delete;
 
-  // 基本信息访问
+  // Basic information access
   long getID() const;
   std::wstring getArg(size_t index) const;
   size_t getArgCount() const;
 
-  // 默认值管理
+  // Default value management
   bool hasDefaultValue() const;
   Topic* setDefaultValue(std::wstring value);
   std::wstring getDefaultValue() const;
 
-  // 值管理
+  // Value management
   bool hasValue() const;
   Topic* setValue(const std::wstring& value);
   Topic* setValue(xllType& x);
@@ -59,7 +59,7 @@ public:
   bool hasChanged() const;
   Topic* update(SAFEARRAY** parrayOut, int i);
 
-  // 任务管理
+  // Task management
   Topic* setAsync(bool isAsync);
   Topic* setTask(Task task, bool is_async = false, int run_count = 1);
   bool isTaskRunning() const;
@@ -67,20 +67,20 @@ public:
   bool runTask();
 
 private:
-  // 成员变量
-  long topic_id = 0;                   // 主题ID
-  int task_run_count = 1;              // 任务运行次数
-  StringArray args;                    // 参数数组
-  Task task = nullptr;                 // 任务函数
-  bool isAsync = false;                // 是否异步执行
-  HANDLE async_handle = nullptr;       // 异步线程句柄
-  std::atomic<bool> is_runing = false; // 运行状态标志
-  std::wstring default_value;          // 默认值
-  std::wstring old_value;              // 旧值
-  std::wstring value;                  // 当前值
-  mutable std::mutex mutex_value;      // 互斥锁
-  mutable std::mutex mutex_task;       // 互斥锁
+  // Member variables
+  long topic_id = 0;                   // Topic ID
+  int task_run_count = 1;              // Task execution count
+  StringArray args;                    // Parameter array
+  Task task = nullptr;                 // Task function
+  bool isAsync = false;                // Whether to execute asynchronously
+  HANDLE async_handle = nullptr;       // Async thread handle
+  std::atomic<bool> is_runing = false; // Running status flag
+  std::wstring default_value;          // Default value
+  std::wstring old_value;              // Old value
+  std::wstring value;                  // Current value
+  mutable std::mutex mutex_value;      // Mutex lock
+  mutable std::mutex mutex_task;       // Mutex lock
 
-  // 私有辅助函数
+  // Private utility functions
   void cleanup();
 };

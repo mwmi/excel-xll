@@ -1,134 +1,134 @@
 /**
  * @file xllRTD.h
- * @brief RTD（实时数据）函数注册和调用管理模块
+ * @brief RTD (Real-Time Data) function registration and call management module
  * @author ExcelXLL Framework
  * @date 2025
  *
- * 本文件定义了RTD函数的注册、管理和调用机制，提供了一个统一的接口
- * 用于处理Excel中的实时数据函数。RTD系统允许Excel工作表实时获取
- * 和更新外部数据源的数据。
+ * This file defines the registration, management and call mechanism of RTD functions, providing a unified interface
+ * for handling real-time data functions in Excel. The RTD system allows Excel worksheets to obtain
+ * and update data from external data sources in real time.
  *
- * 主要功能：
- * - RTD函数注册和管理
- * - 异步函数调用支持
- * - 默认值和状态管理
- * - Excel RTD API封装
+ * Main functions:
+ * - RTD function registration and management
+ * - Asynchronous function call support
+ * - Default value and state management
+ * - Excel RTD API encapsulation
  *
- * @see RtdServer.h RTD服务器实现
- * @see RTDTopic.h RTD主题管理
+ * @see RtdServer.h RTD server implementation
+ * @see RTDTopic.h RTD topic management
  */
 #pragma once
 #include "xllType.h"
 #include "RtdServer.h"
 
- /// @brief RTD函数指针类型定义，用于定义异步数据获取函数
- /// @param args 函数参数列表，使用智能指针管理xllType对象
- /// @param topic RTD主题对象指针，包含主题信息和状态
- /// @return 执行结果，0表示成功，负值表示错误
+ /// @brief RTD function pointer type definition, used to define asynchronous data acquisition functions
+ /// @param args Function parameter list, using smart pointers to manage xllType objects
+ /// @param topic RTD topic object pointer, containing topic information and state
+ /// @return Execution result, 0 for success, negative for error
 using RtdFun = int (*)(xllptrlist, Topic*);
 
 /**
  * @struct RTDRegister
- * @brief RTD函数注册和管理类，采用单例模式
+ * @brief RTD function registration and management class, using singleton pattern
  *
- * 该类负责管理所有的RTD函数，包括注册、调用和状态管理。
- * 使用单例模式确保在全局范围内只有一个注册表实例。
+ * This class is responsible for managing all RTD functions, including registration, calling and state management.
+ * Using singleton pattern ensures only one registry instance exists globally.
  *
- * 设计特点：
- * - 采用单例模式，确保全局唯一性
- * - 支持函数注册、查找和调用
- * - 管理函数的默认值和异步状态
- * - 线程安全的函数注册表
+ * Design features:
+ * - Using singleton pattern to ensure global uniqueness
+ * - Support function registration, lookup and calling
+ * - Manage function default values and asynchronous status
+ * - Thread-safe function registry
  *
- * 使用示例：
+ * Usage example:
  * ```cpp
  * RTDRegister& rtd = RTDRegister::instance();
- * rtd.registerRTDFunction(L"myFunc", myFuncPtr, L"加载中...", true);
+ * rtd.registerRTDFunction(L"myFunc", myFuncPtr, L"Loading...", true);
  * ```
  */
 struct RTDRegister {
 private:
-    /// @brief RTD函数映射表，存储函数名到函数指针的映射关系
+    /// @brief RTD function mapping table, storing mapping relationship from function names to function pointers
     std::map<std::wstring, RtdFun> _async_functions;
-    /// @brief 函数默认值映射表，存储每个函数的初始返回值
+    /// @brief Function default value mapping table, storing initial return values for each function
     std::map<std::wstring, std::wstring> _default_values;
-    /// @brief 函数异步状态映射表，标识函数是否在单独线程中执行
+    /// @brief Function asynchronous status mapping table, indicating whether functions execute in separate threads
     std::map<std::wstring, bool> _is_async;
 public:
     /**
-     * @brief 获取RTD注册器的单例对象
-     * @return RTDRegister& 全局唯一的RTD注册器实例
-     * @note 使用静态局部变量实现线程安全的单例模式
+     * @brief Get singleton object of RTD register
+     * @return RTDRegister& Globally unique RTD register instance
+     * @note Uses static local variable to implement thread-safe singleton pattern
      */
     static RTDRegister& instance();
 
     /**
-     * @brief 注册RTD函数，支持默认值和异步标志
-     * @param name 函数名称，在RTD表达式中作为第一个参数使用
-     * @param fun 函数指针，指向实际的数据获取函数
-     * @param default_value 默认返回值，在函数执行期间显示
-     * @param is_async 是否异步执行，默认false
+     * @brief Register RTD function, supporting default values and async flags
+     * @param name Function name, used as first parameter in RTD expression
+     * @param fun Function pointer, pointing to actual data acquisition function
+     * @param default_value Default return value, displayed during function execution
+     * @param is_async Whether to execute asynchronously, default false
      */
     void registerRTDFunction(const std::wstring& name, RtdFun fun, const wchar_t* default_value = L"", bool is_async = false);
 
     /**
-     * @brief 注册RTD函数（简化版本）
-     * @param name 函数名称
-     * @param fun 函数指针
-     * @param is_async 是否异步执行
+     * @brief Register RTD function (simplified version)
+     * @param name Function name
+     * @param fun Function pointer
+     * @param is_async Whether to execute asynchronously
      */
     void registerRTDFunction(const std::wstring& name, RtdFun fun, bool is_async);
 
     /**
-     * @brief 运行RTD函数
-     * @param name 函数名称
-     * @param args 函数参数列表（移动语义）
-     * @param topic RTD主题对象指针
-     * @return 执行结果，0成功，-1失败（函数未注册）
+     * @brief Run RTD function
+     * @param name Function name
+     * @param args Function parameter list (move semantics)
+     * @param topic RTD topic object pointer
+     * @return Execution result, 0 for success, -1 for failure (function not registered)
      */
     int runAsyncFunction(const std::wstring& name, xllptrlist& args, Topic* topic);
 
-    /// @brief 判断函数是否已注册 @param name 函数名 @return 是否已注册
+    /// @brief Check if function is registered @param name Function name @return Whether registered
     bool isFunctionRegistered(const std::wstring& name);
 
     /**
-     * @brief 获取函数的默认值
-     * @param name 函数名称
-     * @param default_value 输出参数，存储默认值
-     * @return 成功返回true，失败返回false
+     * @brief Get function's default value
+     * @param name Function name
+     * @param default_value Output parameter, stores default value
+     * @return Returns true on success, false on failure
      */
     bool getDefaultValue(const std::wstring& name, std::wstring& default_value);
 
     /**
-     * @brief 判断函数是否为异步执行
-     * @param name 函数名称
-     * @return 异步返回true，同步返回false
+     * @brief Check if function executes asynchronously
+     * @param name Function name
+     * @return Returns true for async, false for sync
      */
 
     bool isFunctionAsync(const std::wstring& name);
 
     /**
-     * @brief 获取函数指针
-     * @param name 函数名称
-     * @return 函数指针，如果不存在则返回nullptr
-     * @warning 调用前应先使用 isFunctionRegistered 检查函数是否存在
+     * @brief Get function pointer
+     * @param name Function name
+     * @return Function pointer, returns nullptr if not exists
+     * @warning Should use isFunctionRegistered to check function existence before calling
      */
     RtdFun& getFunction(const std::wstring& name);
 };
 
 /**
- * @brief Excel RTD函数的模板封装，用于调用Excel的RTD API
+ * @brief Excel RTD function template wrapper for calling Excel's RTD API
  *
- * 该函数将参数包装成Excel能够识别的格式，并调用Excel的
- * xlfRtd函数来实现实时数据获取。
+ * This function wraps parameters into Excel-recognizable format and calls Excel's
+ * xlfRtd function to implement real-time data acquisition.
  *
- * @tparam Args 可变参数类型列表
- * @param result 输出参数，存储Excel返回的结果
- * @param args RTD函数的参数列表
- * @return Excel API调用结果，xlretSuccess表示成功
+ * @tparam Args Variadic parameter type list
+ * @param result Output parameter, stores Excel's return result
+ * @param args RTD function parameter list
+ * @return Excel API call result, xlretSuccess indicates success
  *
- * @note 第一个参数会被作为RTD服务器的函数名使用
- * @see Excel12v 底层Excel API函数
+ * @note First parameter will be used as RTD server function name
+ * @see Excel12v Low-level Excel API function
  */
 template <typename... Args>
 int xllRTD(xllType& result, Args... args) {
@@ -157,21 +157,21 @@ int xllRTD(xllType& result, Args... args) {
         result.deserialize();
         Excel12(xlFree, 0, 1, &r);
     } else {
-        result = L"RTD服务异常";
+        result = L"RTD service exception";
     }
     return ret;
 }
 
 /**
- * @brief RTD任务注册函数
+ * @brief RTD task registration function
  *
- * 根据Topic的参数信息，查找RTD注册表中的对应函数，
- * 并为该Topic设置适当的任务和默认值。
+ * Based on Topic's parameter information, finds corresponding function in RTD registry
+ * and sets appropriate task and default values for the Topic.
  *
- * @param topic RTD主题对象指针，包含参数信息
- * @return 注册结果，0表示成功，负值表示失败
+ * @param topic RTD topic object pointer, contains parameter information
+ * @return Registration result, 0 for success, negative for failure
  *
- * @note 第一个参数被视为函数名，其余参数传递给注册的函数
+ * @note First parameter is treated as function name, remaining parameters are passed to registered function
  * @see RTDRegister::runAsyncFunction
  */
 int registerRTDTask(Topic* topic);

@@ -4,199 +4,199 @@
 #include <map>
 
 /**
- * @brief 为RTD主题创建任务
- * @param topic 指向Topic对象的指针
- * @return 成功返回0，失败返回非0值
+ * @brief Create task for RTD topic
+ * @param topic Pointer to Topic object
+ * @return Returns 0 on success, non-zero on failure
  */
 int createRtdTask(Topic* topic);
 
-/// DLL完整路径存储缓冲区
+/// DLL full path storage buffer
 extern WCHAR RtdServer_DllPath[1024];
 
-/// RTD服务器程序标识符
+/// RTD server program identifier
 #define RtdServer_ProgId L"rtdserver"
 
-/// RTD服务器类标识符字符串
+/// RTD server class identifier string
 #define RtdServer_CLSID L"{EC0E6192-DB51-11D3-8F3E-00C04F3651B8}"
 
-/// 定义RTD服务器的GUID
+/// Define GUID for RTD server
 DEFINE_GUID(CLSID_RtdServer, 0xEC0E6192, 0xDB51, 0x11D3, 0x8F, 0x3E, 0x00, 0xC0, 0x4F, 0x36, 0x51, 0xB8);
 
 /**
- * @brief RTD服务器类，实现IRtdServer接口
+ * @brief RTD server class, implements IRtdServer interface
  *
- * 这个类提供了RTD（Real-Time Data）服务器的功能，允许Excel等应用程序
- * 实时获取数据更新。它实现了标准的COM接口IRtdServer。
+ * This class provides RTD (Real-Time Data) server functionality, allowing applications like Excel
+ * to obtain real-time data updates. It implements the standard COM interface IRtdServer.
  */
 class RtdServer : public IRtdServer {
 private:
-  /// COM对象引用计数
+  /// COM object reference count
   ULONG m_RefCount = 0;
 
-  /// 类型信息接口指针
+  /// Type information interface pointer
   ITypeInfo* m_pTypeInfoInterface = nullptr;
 
-  /// RTD更新事件回调对象指针
+  /// RTD update event callback object pointer
   IRTDUpdateEvent* m_pCallbackObject = nullptr;
 
-  /// 心跳间隔时间（毫秒）
+  /// Heartbeat interval time (milliseconds)
   long m_HeartbeatInterval = 15000;
 
-  /// 主题映射表，存储主题ID与主题对象的对应关系
+  /// Topic map, stores correspondence between topic IDs and topic objects
   std::map<long, Topic*> m_TopicMap;
 
-  /// 保护主题映射表的互斥锁
+  /// Mutex protecting the topic map
   mutable std::mutex m_TopicMapMutex;
 
-  /// 待删除的主题ID列表
+  /// List of topic IDs to be deleted
   std::vector<long> m_DeleteTopicIDs;
 
-  /// 工作线程句柄
+  /// Worker thread handle
   HANDLE m_hThread = nullptr;
 
-  /// 线程ID
+  /// Thread ID
   DWORD m_threadID = 0;
 
-  /// 服务器运行状态标志
+  /// Server running status flag
   bool m_running = false;
 
-  /// 运行间隔时间（毫秒）
+  /// Running interval time (milliseconds)
   int runing_ms = 1000;
 
   /**
-   * @brief 工作线程处理程序
-   * @return DWORD 线程退出码
+   * @brief Worker thread procedure
+   * @return DWORD Thread exit code
    */
   DWORD WorkerThreadProc();
 
 public:
   /**
-   * @brief 构造函数
+   * @brief Constructor
    */
   RtdServer();
 
   /**
-   * @brief 析构函数
+   * @brief Destructor
    */
   ~RtdServer();
 
   // IUnknown methods
   /**
-   * @brief 查询接口
-   * @param riid 请求的接口ID
-   * @param ppvObject 输出接口指针
-   * @return HRESULT 操作结果
+   * @brief Query interface
+   * @param riid Requested interface ID
+   * @param ppvObject Output interface pointer
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject);
 
   /**
-   * @brief 增加引用计数
-   * @return 新的引用计数值
+   * @brief Increase reference count
+   * @return New reference count value
    */
   ULONG STDMETHODCALLTYPE AddRef(void);
 
   /**
-   * @brief 减少引用计数
-   * @return 新的引用计数值
+   * @brief Decrease reference count
+   * @return New reference count value
    */
   ULONG STDMETHODCALLTYPE Release(void);
 
   // IDispatch methods
   /**
-   * @brief 获取类型信息数量
-   * @param pctinfo 输出类型信息数量
-   * @return HRESULT 操作结果
+   * @brief Get type information count
+   * @param pctinfo Output type information count
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE GetTypeInfoCount(UINT* pctinfo);
 
   /**
-   * @brief 获取类型信息
-   * @param iTInfo 类型信息索引
-   * @param lcid 区域设置标识符
-   * @param ppTInfo 输出类型信息指针
-   * @return HRESULT 操作结果
+   * @brief Get type information
+   * @param iTInfo Type information index
+   * @param lcid Locale identifier
+   * @param ppTInfo Output type information pointer
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE GetTypeInfo(UINT iTInfo, LCID lcid, ITypeInfo** ppTInfo);
 
   /**
-   * @brief 获取方法或属性的分发ID
-   * @param riid 保留参数，必须为IID_NULL
-   * @param rgszNames 方法或属性名称数组
-   * @param cNames 名称数量
-   * @param lcid 区域设置标识符
-   * @param rgDispId 输出分发ID数组
-   * @return HRESULT 操作结果
+   * @brief Get dispatch ID of method or property
+   * @param riid Reserved parameter, must be IID_NULL
+   * @param rgszNames Method or property name array
+   * @param cNames Number of names
+   * @param lcid Locale identifier
+   * @param rgDispId Output dispatch ID array
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE GetIDsOfNames(REFIID riid, LPOLESTR* rgszNames, UINT cNames, LCID lcid, DISPID* rgDispId);
 
   /**
-   * @brief 调用方法或访问属性
-   * @param dispIdMember 分发ID
-   * @param riid 保留参数，必须为IID_NULL
-   * @param lcid 区域设置标识符
-   * @param wFlags 调用标志
-   * @param pDispParams 参数信息
-   * @param pVarResult 返回值
-   * @param pExcepInfo 异常信息
-   * @param puArgErr 错误参数索引
-   * @return HRESULT 操作结果
+   * @brief Call method or access property
+   * @param dispIdMember Dispatch ID
+   * @param riid Reserved parameter, must be IID_NULL
+   * @param lcid Locale identifier
+   * @param wFlags Call flags
+   * @param pDispParams Parameter information
+   * @param pVarResult Return value
+   * @param pExcepInfo Exception information
+   * @param puArgErr Error parameter index
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE Invoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags, DISPPARAMS* pDispParams, VARIANT* pVarResult, EXCEPINFO* pExcepInfo, UINT* puArgErr);
 
   // IRtdServer methods
   /**
-   * @brief 启动RTD服务器
-   * @param CallbackObject 回调对象指针
-   * @param pfRes 输出结果标志
-   * @return HRESULT 操作结果
+   * @brief Start RTD server
+   * @param CallbackObject Callback object pointer
+   * @param pfRes Output result flag
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE ServerStart(IRTDUpdateEvent* CallbackObject, long* pfRes);
 
   /**
-   * @brief 连接数据主题
-   * @param TopicID 主题ID
-   * @param Strings 主题参数字符串数组
-   * @param GetNewValues 是否获取新值的标志
-   * @param pvarOut 输出数据
-   * @return HRESULT 操作结果
+   * @brief Connect data topic
+   * @param TopicID Topic ID
+   * @param Strings Topic parameter string array
+   * @param GetNewValues Flag to get new values
+   * @param pvarOut Output data
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE ConnectData(long TopicID, SAFEARRAY** Strings, VARIANT_BOOL* GetNewValues, VARIANT* pvarOut);
 
   /**
-   * @brief 刷新数据
-   * @param TopicCount 输出主题数量
-   * @param parrayOut 输出数据数组
-   * @return HRESULT 操作结果
+   * @brief Refresh data
+   * @param TopicCount Output topic count
+   * @param parrayOut Output data array
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE RefreshData(long* TopicCount, SAFEARRAY** parrayOut);
 
   /**
-   * @brief 断开数据主题连接
-   * @param TopicID 主题ID
-   * @return HRESULT 操作结果
+   * @brief Disconnect data topic connection
+   * @param TopicID Topic ID
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE DisconnectData(long TopicID);
 
   /**
-   * @brief 心跳检测
-   * @param pfRes 输出结果标志
-   * @return HRESULT 操作结果
+   * @brief Heartbeat detection
+   * @param pfRes Output result flag
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE Heartbeat(long* pfRes);
 
   /**
-   * @brief 终止RTD服务器
-   * @return HRESULT 操作结果
+   * @brief Terminate RTD server
+   * @return HRESULT Operation result
    */
   HRESULT STDMETHODCALLTYPE ServerTerminate();
 
   // User-defined methods
   /**
-   * @brief 加载类型信息的辅助方法
-   * @param pptinfo 输出类型信息指针
-   * @param clsid 类标识符
-   * @param lcid 区域设置标识符
-   * @return HRESULT 操作结果
+   * @brief Helper method to load type information
+   * @param pptinfo Output type information pointer
+   * @param clsid Class identifier
+   * @param lcid Locale identifier
+   * @return HRESULT Operation result
    */
   STDMETHODIMP LoadTypeInfo(ITypeInfo** pptinfo, REFCLSID clsid, LCID lcid);
 };

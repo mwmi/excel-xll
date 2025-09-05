@@ -3,9 +3,9 @@
 #include <olectl.h>
 
 /*************
- * DLL注册表信息
- * 这里定义了RTDServer的ProgId、CLSID、TypeId等信息
- * 这些信息用于COM注册和查找
+ * DLL registry information
+ * Here defines RTDServer's ProgId, CLSID, TypeId and other information
+ * This information is used for COM registration and lookup
  *************/
 extern const WCHAR* regTable[][3];
 
@@ -26,7 +26,7 @@ STDAPI DllUnregisterServer();
 STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void** ppv);
 STDAPI DllCanUnloadNow();
 
-/// @brief 检测当前进程是否具有写入HKLM权限 @return true:有写入权限，false:没有写入权限
+/// @brief Check if current process has write permission to HKLM @return true:has write permission, false:no write permission
 bool CanWriteToHKLM();
 bool CheckRegistry();
 bool AutoRegisterDll();

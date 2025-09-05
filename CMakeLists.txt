@@ -13,23 +13,23 @@ add_library(${PROJECT_NAME} SHARED
     ${SOURCES}
 )
 
-# 设置MSVC编译选项
+# Set MSVC compilation options
 if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /source-charset:utf-8 /execution-charset:utf-8")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /source-charset:utf-8 /execution-charset:utf-8")
 endif()
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-    # 32位支持WPS
-    target_link_libraries(${PROJECT_NAME} XLCALL32) # 32位
+    # 32-bit supports WPS
+    target_link_libraries(${PROJECT_NAME} XLCALL32) # 32-bit
     set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX "_x86.xll")
 elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    # 64位支持Excel
-    target_link_libraries(${PROJECT_NAME} x64/XLCALL32) # 64位
+    # 64-bit supports Excel
+    target_link_libraries(${PROJECT_NAME} x64/XLCALL32) # 64-bit
     set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX "_x64.xll")
 endif()
 
-# 编译选项选择非Debug模式后开启静态编译，尽量减小编译文件的依赖和文件大小
+# Compilation option: Enable static compilation in non-Debug mode to minimize dependencies and file size
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     
