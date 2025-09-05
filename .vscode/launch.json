@@ -1,0 +1,105 @@
+{
+    "configurations": [
+        {
+            "name": "(Windows) 启动Excel",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false,
+                "programOutput": false
+            },
+        },
+        {
+            "name": "(Windows) 附加",
+            "type": "cppvsdbg",
+            "request": "attach",
+            "processId": "${command:pickProcess}",
+            "logging": {
+                "moduleLoad": false,
+                "programOutput": false
+            }
+        },
+        {
+            "name": "(Windows) 启动WPS",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "C:\\Users\\mwm\\AppData\\Local\\Kingsoft\\WPS Office\\12.1.0.22529\\office6\\et.exe",
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false,
+                "programOutput": false
+            },
+        },
+        {
+            "name": "(gdb) 附加",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+            "processId": "${command:pickProcess}",
+            "MIMode": "gdb",
+            "logging": {
+                "moduleLoad": false,
+                "programOutput": false
+            },
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "将反汇编风格设置为 Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                },
+                {
+                    "text": "set charset UTF-8"
+                }
+            ]
+        },
+        {
+            "name": "(gdb) 启动Excel",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "logging": {
+                "moduleLoad": false,
+                "programOutput": false
+            },
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "将反汇编风格设置为 Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                },
+                {
+                    "text": "set charset UTF-8"
+                }
+            ]
+        },
+        {
+            "name": "CMake调试",
+            "type": "cmake",
+            "request": "launch",
+            "cmakeDebugType": "configure",
+            "scriptPath": "${file}"
+        }
+    ]
+}

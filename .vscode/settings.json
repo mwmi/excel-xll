@@ -1,0 +1,18 @@
+{
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "debug.internalConsoleOptions": "openOnSessionStart",
+    "cmake.generator": "Ninja",
+    "cmake.debugConfig": {
+        "args": [
+            "myFirstArgument"
+        ],
+        "logging": {
+            "moduleLoad": false
+        },
+        "setupCommands": [
+            {
+                "text": "set charset UTF-8"
+            }
+        ]
+    },
+}
