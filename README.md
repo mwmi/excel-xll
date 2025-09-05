@@ -1,51 +1,44 @@
-# 📊 ExcelXLL - Excel 插件开发框架
+# 🚀 ExcelXLL - 现代 Excel 插件开发框架
 
-<div align="center">
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://en.cppreference.com/w/cpp/20)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/mwmi/excel-xll/blob/main/LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://www.microsoft.com/windows/)
+[![Excel](https://img.shields.io/badge/Excel-2016%2B-orange.svg)](https://www.microsoft.com/excel)
+[![WPS](https://img.shields.io/badge/WPS-Office-red.svg)](https://www.wps.com/)
+[![GitHub Stars](https://img.shields.io/github/stars/mwmi/excel-xll?style=social)](https://github.com/mwmi/excel-xll)
+[![GitHub Forks](https://img.shields.io/github/forks/mwmi/excel-xll?style=social)](https://github.com/mwmi/excel-xll/fork)
 
-## 🤖 由 AI 生成 🤖
-**✨ This Documentation is AI-Generated ✨**
-
----
-
-</div>
-
-![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)
-![Excel](https://img.shields.io/badge/Excel-2010%2B-orange.svg)
-![WPS](https://img.shields.io/badge/WPS-Office-red.svg)
-
-ExcelXLL 是一个功能强大的 Excel/WPS XLL 插件开发框架，使用现代 C++20 标准构建。该项目旨在简化 Excel 自定义函数的开发过程，为 C++ 开发者提供高效、易用、内存安全的插件开发解决方案。
+📈 ExcelXLL 是一个功能强大的 Excel/WPS XLL 插件开发框架，使用现代 C++20 标准构建。该项目旨在简化 Excel 自定义函数的开发过程，为 C++ 开发者提供高效、易用、内存安全的插件开发解决方案。
 
 ## ✨ 核心特性
 
-### 🔧 开发便利性
-- **现代 C++20 标准**：充分利用现代 C++ 特性提升开发效率
-- **简洁的宏定义**：通过 `UDF` 和 `RTD` 宏大幅简化函数定义
-- **智能类型系统**：自动处理 Excel 与 C++ 之间的数据类型转换
-- **丰富的示例代码**：提供完整的函数示例和最佳实践
+### 💻 开发便利性
+- **⚡ 现代 C++20 标准**：充分利用现代 C++ 特性提升开发效率
+- **🎯 简洁的宏定义**：通过 `UDF` 和 `RTD` 宏大幅简化函数定义
+- **🔄 智能类型系统**：自动处理 Excel 与 C++ 之间的数据类型转换
+- **📚 丰富的示例代码**：提供完整的函数示例和最佳实践
 
 ### 🛡️ 内存安全
-- **RAII 模式**：自动管理内存资源，防止内存泄漏
-- **智能指针管理**：使用 `std::unique_ptr` 管理动态内存
-- **异常安全保证**：提供强异常安全性保证
+- **🔒 RAII 模式**：自动管理内存资源，防止内存泄漏
+- **🧠 智能指针管理**：使用 `std::unique_ptr` 管理动态内存
+- **⚠️ 异常安全保证**：提供强异常安全性保证
 
 ### 🚀 高性能
-- **零拷贝设计**：支持移动语义，高效处理大数据
-- **静态链接优化**：Release 模式下减少依赖和文件大小
-- **编译时优化**：模板元编程和编译时计算
+- **⚡ 零拷贝设计**：支持移动语义，高效处理大数据
+- **📦 静态链接优化**：Release 模式下减少依赖和文件大小
+- **🔧 编译时优化**：模板元编程和编译时计算
 
 ### 🌐 广泛兼容性
-- **双编译器支持**：MinGW-w64 和 Microsoft Visual C++
-- **多架构支持**：32 位 WPS 和 64 位 Excel
-- **多版本兼容**：Excel 2010+ 和 WPS Office
+- **🔨 双编译器支持**：MinGW-w64 和 Microsoft Visual C++
+- **💾 多架构支持**：32 位 WPS 和 64 位 Excel
+- **📅 多版本兼容**：Excel 2016+ 和 WPS Office
 
 ### 🔄 实时数据支持
-- **RTD 函数**：支持实时数据更新
-- **异步处理**：非阻塞的数据获取和更新
-- **COM 组件**：完整的 RTD 服务器实现
+- **📡 RTD 函数**：支持实时数据更新
+- **⚡ 异步处理**：非阻塞的数据获取和更新
+- **🔗 COM 组件**：完整的 RTD 服务器实现
 
-## 📁 项目结构
+## 📁 项目结构图
 
 ```
 ExcelXLL/
@@ -83,20 +76,20 @@ ExcelXLL/
 
 ## 🚀 快速开始
 
-### 系统要求
+### 📋 系统要求
 
-- **操作系统**：Windows 10/11
-- **编译器**：
-  - MinGW-w64 GCC 11+ (推荐)
-  - Microsoft Visual C++ 2019+
-- **构建工具**：CMake 3.20+, Ninja
-- **目标平台**：
-  - Excel 2010+ (64位)
-  - WPS Office (32位)
+- **💿 操作系统**：Windows 10/11
+- **🔨 编译器**：
+  - 🟢 MinGW-w64 GCC 11+ (推荐)
+  - 🔵 Microsoft Visual C++ 2019+
+- **⚙️ 构建工具**：CMake 3.20+, Ninja
+- **🎯 目标平台**：
+  - 📊 Excel 2016+ (64位)
+  - 📝 WPS Office (32位)
 
-### 环境配置
+### ⚙️ 环境配置
 
-#### 方案一：MinGW-w64 (推荐)
+#### 🟢 方案一：MinGW-w64 (推荐)
 
 1. **安装 MSYS2**
 ```bash
@@ -115,7 +108,7 @@ C:\msys64\mingw32\bin
 C:\msys64\usr\bin
 ```
 
-#### 方案二：Microsoft Visual C++
+#### 🔵 方案二：Microsoft Visual C++
 
 安装 Visual Studio 2019/2022，确保包含以下组件：
 - C++ 核心功能
@@ -123,7 +116,7 @@ C:\msys64\usr\bin
 - Windows 10/11 SDK
 - CMake 工具
 
-### 构建项目
+### 🔨 构建项目
 
 #### MinGW-w64 构建
 
@@ -152,7 +145,7 @@ cmake -B build64 -G Ninja -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -DCMAKE_
 cmake --build build64
 ```
 
-### 安装和使用
+### 📥 安装和使用
 
 1. **复制插件文件**：
    - Excel：将 `build64/EXCELXLL_x64.xll` 复制到目标位置
@@ -171,9 +164,9 @@ cmake --build build64
    =RTDClock()            # 显示实时时钟
    ```
 
-## 📖 开发指南
+## 📖 开发指南手册
 
-### 创建 UDF 函数
+### 🎯 创建 UDF 函数
 
 UDF (User Defined Function) 用于创建 Excel 自定义函数：
 
@@ -247,7 +240,7 @@ UDF(RetArray, L"返回测试数组") {
 }
 ```
 
-### 创建 RTD 函数
+### 📡 创建 RTD 函数
 
 RTD (Real-Time Data) 用于创建实时数据函数：
 
@@ -302,7 +295,7 @@ RTD(RTDParam, L"参数测试",
 }
 ```
 
-### 全局配置
+### ⚙️ 全局配置
 
 ```cpp
 // 插件配置
@@ -335,7 +328,7 @@ SET() {
 }
 ```
 
-### 数据类型处理
+### 🔄 数据类型处理
 
 `xllType` 类提供了强大的数据类型封装：
 
@@ -368,9 +361,9 @@ result = {1, 2, 3};      // 一维数组
 result = {{1, 2}, {3, 4}}; // 二维数组
 ```
 
-## 🔧 高级功能
+## 🔧 高级功能特性
 
-### 调用 Excel 内置函数
+### 📞 调用 Excel 内置函数
 
 ```cpp
 UDF(CallExcelFunc, L"调用Excel函数示例", Param range) {
@@ -387,7 +380,7 @@ UDF(CallExcelFunc, L"调用Excel函数示例", Param range) {
 }
 ```
 
-### 错误处理
+### ⚠️ 错误处理机制
 
 ```cpp
 UDF(SafeDiv, L"安全除法", Param a, Param b) {
@@ -411,7 +404,7 @@ UDF(SafeDiv, L"安全除法", Param a, Param b) {
 }
 ```
 
-### 性能优化技巧
+### ⚡ 性能优化技巧
 
 1. **避免不必要的复制**：
 ```cpp
@@ -448,9 +441,9 @@ UDF(CreateArray, L"创建数组", Param size) {
 }
 ```
 
-## 🐛 故障排除
+## 🐛 故障排除指南
 
-### 常见问题
+### ❓ 常见问题
 
 1. **编译错误：找不到 XLCALL32.LIB**
    - 确保 `lib/` 目录包含正确的库文件
@@ -471,7 +464,7 @@ UDF(CreateArray, L"创建数组", Param size) {
    - 检查异步函数是否正常运行
    - 验证 COM 组件注册
 
-### 调试技巧
+### 🔍 调试技巧
 
 1. **使用断点调试**：
 ```cpp
@@ -504,14 +497,14 @@ UDF(LogFunc, L"日志函数", Param input) {
 }
 ```
 
-### 性能分析
+### 📊 性能分析
 
 1. **使用 Release 模式构建**以获得最佳性能
 2. **避免频繁的字符串操作**
 3. **合理使用 RTD 更新频率**
 4. **考虑使用线程池**处理复杂计算
 
-## 🤝 贡献指南
+## 🤝 贡献指南说明
 
 我们欢迎任何形式的贡献！请遵循以下步骤：
 
@@ -521,7 +514,7 @@ UDF(LogFunc, L"日志函数", Param input) {
 4. **推送到分支** (`git push origin feature/AmazingFeature`)
 5. **开启 Pull Request**
 
-### 代码规范
+### 📝 代码规范
 
 - 使用 C++20 标准
 - 遵循现有的代码风格
@@ -533,7 +526,7 @@ UDF(LogFunc, L"日志函数", Param input) {
 
 本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
 
-## 🙏 致谢
+## 🙏 特别致谢
 
 - Microsoft Excel SDK 团队
 - MinGW-w64 项目
@@ -542,12 +535,27 @@ UDF(LogFunc, L"日志函数", Param input) {
 
 ## 📞 联系方式
 
-- 作者：mwmi
-- 邮箱：[通过 GitHub Issues 联系]
-- 项目链接：[https://github.com/username/ExcelXLL](https://github.com/username/ExcelXLL)
+- 👨‍💻 **作者**：mwmi
+- 📧 **邮箱**：[通过 GitHub Issues 联系](https://github.com/mwmi/excel-xll/issues)
+- 🔗 **项目链接**：[https://github.com/mwmi/excel-xll](https://github.com/mwmi/excel-xll)
+- 🌟 **GitHub**：[@mwmi](https://github.com/mwmi)
 
 ---
 
-⭐ 如果这个项目对您有帮助，请给我们一个 Star！
+<div align="center">
 
-📚 更多文档和示例请查看 [Wiki](https://github.com/username/ExcelXLL/wiki)
+### 🌟 如果这个项目对您有帮助，请给我们一个 Star！
+
+[![GitHub stars](https://img.shields.io/github/stars/mwmi/excel-xll.svg?style=social&label=Star)](https://github.com/mwmi/excel-xll)
+[![GitHub forks](https://img.shields.io/github/forks/mwmi/excel-xll.svg?style=social&label=Fork)](https://github.com/mwmi/excel-xll/fork)
+[![GitHub watchers](https://img.shields.io/github/watchers/mwmi/excel-xll.svg?style=social&label=Watch)](https://github.com/mwmi/excel-xll)
+
+📚 **更多文档和示例请查看** [📖 Wiki](https://github.com/mwmi/excel-xll/wiki)
+
+🚀 **快速开始** | 📖 **详细文档** | 🐛 **问题反馈** | 💡 **功能建议**
+
+[开始使用](https://github.com/mwmi/excel-xll#-快速开始) • [查看文档](https://github.com/mwmi/excel-xll#-开发指南手册) • [提交问题](https://github.com/mwmi/excel-xll/issues) • [功能请求](https://github.com/mwmi/excel-xll/issues/new)
+
+**感谢所有贡献者的支持！** 🎉
+
+</div>
