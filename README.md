@@ -1,5 +1,14 @@
 # 🚀 ExcelXLL - 现代 Excel 插件开发框架
 
+<div align="center">
+
+## 🤖 AI Generated Documentation 🤖
+**✨ 本文档由人工智能生成 ✨**
+
+---
+
+</div>
+
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://en.cppreference.com/w/cpp/20)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/mwmi/excel-xll/blob/main/LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://www.microsoft.com/windows/)
